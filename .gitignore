@@ -1,1 +1,22 @@
-.idea
+# Python Cache and Compiled Files
+__pycache__/
+*.py[cod]
+*.pyc
+
+# Virtual Environment
+venv/
+.env
+
+# Database
+db.sqlite3
+
+# User-specific IDE settings
+.idea/
+.vscode/
+
+# Static and Media files
+staticfiles/
+media/
+
+# OS generated files
+.DS_Store
