@@ -20,3 +20,13 @@ media/
 
 # OS generated files
 .DS_Store
+
+# dagster
+*index.db*
+*.db-shm
+*.db-wal
+*runs.db
+*schedules.db
+
+# DuckDB
+*.duckdb
