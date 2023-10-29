@@ -30,3 +30,4 @@ media/
 
 # DuckDB
 *.duckdb
+/dagster_university/tmpdshmwpp6/
