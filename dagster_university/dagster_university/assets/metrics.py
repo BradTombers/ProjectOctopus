@@ -1,13 +1,13 @@
 from dagster import asset
+from datetime import datetime, timedelta
+from . import constants
 
+import duckdb
+import pandas as pd
 import plotly.express as px
 import plotly.io as pio
 import geopandas as gpd
-
-import duckdb
 import os
-
-from . import constants
 
 
 @asset(deps=["taxi_trips", "taxi_zones"])
@@ -54,34 +54,6 @@ def manhattan_map():
     )
 
     pio.write_image(fig, constants.MANHATTAN_MAP_FILE_PATH)
-
-
-# @asset(
-#     deps=["taxi_trips"]
-# )
-# def trips_by_week():
-#     query = """
-#         SELECT
-#             DATE_TRUNC('week', CAST(dropoff_datetime AS date) + 1) - 1 AS period,
-#             COUNT(*) AS num_trips,
-#             SUM(COALESCE(passenger_count,0)) AS passenger_count,
-#             SUM(COALESCE(total_amount,0)) AS total_amount,
-#             SUM(COALESCE(trip_distance,0)) AS trip_distance
-#         FROM trips
-#         GROUP BY 1
-#         ORDER BY 1
-#     """
-#
-#     conn = duckdb.connect(os.getenv("DUCKDB_DATABASE"))
-#     trips_by_week = conn.execute(query).fetch_df()
-#
-#     with open(constants.TRIPS_BY_WEEK_FILE_PATH, 'w') as output_file:
-#         output_file.write(trips_by_week.to_csv())
-
-
-from datetime import datetime, timedelta
-from . import constants
-import pandas as pd
 
 
 @asset(deps=["taxi_trips"])
