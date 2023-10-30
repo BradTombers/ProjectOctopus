@@ -69,7 +69,7 @@ def trips_by_week(database: DuckDBResource):
             SELECT
                 vendor_id, total_amount, trip_distance, passenger_count
             FROM trips
-            WERE DATE_TRUNC('week', pickup_datetime) = DATE_TRUNC('week', '{current_date_str}'::DATE)
+            WHERE DATE_TRUNC('week', pickup_datetime) = DATE_TRUNC('week', '{current_date_str}'::DATE)
         """
 
         with database.get_connection() as conn:
