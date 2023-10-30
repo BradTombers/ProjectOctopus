@@ -35,3 +35,5 @@ media/
 # Jupyter
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
+/dagster_university/tmp8406a2il/
+/dagster_university/data/

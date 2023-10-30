@@ -1,7 +1,6 @@
-import duckdb
-import os
 import requests
 
+from dagster_duckdb import DuckDBResource
 from . import constants
 from dagster import asset
 
@@ -37,46 +36,46 @@ def taxi_zones_file():
 
 
 @asset(deps=["taxi_trips_file"])
-def taxi_trips():
+def taxi_trips(database: DuckDBResource):
     """
     The raw taxi trips dataset, loaded into a DuckDB database
     """
     sql_query = """
-				create or replace table trips as (
-						select
-								VendorID as vendor_id,
-								PULocationID as pickup_zone_id,
-								DOLocationID as dropoff_zone_id,
-								RatecodeID as rate_code_id,
-								payment_type as payment_type,
-								tpep_dropoff_datetime as dropoff_datetime,
-								tpep_pickup_datetime as pickup_datetime,
-								trip_distance as trip_distance,
-								passenger_count as passenger_count,
-								total_amount as total_amount
-						from 'data/raw/taxi_trips_2023-03.parquet'
-				);
-		"""
+        CREATE OR REPLACE TABLE trips AS (
+            SELECT
+                VendorID AS vendor_id,
+                PULocationID AS pickup_zone_id,
+                DOLocationID AS dropoff_zone_id,
+                RatecodeID AS rate_code_id,
+                payment_type AS payment_type,
+                tpep_dropoff_datetime AS dropoff_datetime,
+                tpep_pickup_datetime AS pickup_datetime,
+                trip_distance AS trip_distance,
+                passenger_count AS passenger_count,
+                total_amount AS total_amount
+            FROM 'data/raw/taxi_trips_2023-03.parquet'
+        );
+    """
 
-    conn = duckdb.connect(os.getenv("DUCKDB_DATABASE"))
-    conn.execute(sql_query)
+    with database.get_connection() as conn:
+        conn.execute(sql_query)
 
 
 @asset(deps=["taxi_zones_file"])
-def taxi_zones():
+def taxi_zones(database: DuckDBResource):
     """
     The raw taxi zones dataset, loaded into a DuckDB database
     """
     sql_query = f"""
-				create or replace table zones as (
-						select
-								LocationId as zone_id,
-								zone,
-								borough,
-								the_geom AS geometry
-						from '{constants.TAXI_ZONES_FILE_PATH}'
-				);
-		"""
+        CREATE OR REPLACE TABLE zones AS (
+            SELECT
+                LocationId AS zone_id,
+                zone,
+                borough,
+                the_geom AS geometry
+            FROM '{constants.TAXI_ZONES_FILE_PATH}'
+        );
+    """
 
-    conn = duckdb.connect(os.getenv("DUCKDB_DATABASE"))
-    conn.execute(sql_query)
+    with database.get_connection() as conn:
+        conn.execute(sql_query)
