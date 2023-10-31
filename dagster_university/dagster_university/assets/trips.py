@@ -39,7 +39,7 @@ def taxi_zones_file():
         output_file.write(raw_taxi_zones.content)
 
 
-@asset(deps=["taxi_trips_file"], partition_deps=monthly_partition)
+@asset(deps=["taxi_trips_file"], partitions_def=monthly_partition)
 def taxi_trips(context, database: DuckDBResource):
     """
     The raw taxi trips dataset, loaded into a DuckDB database
@@ -49,7 +49,7 @@ def taxi_trips(context, database: DuckDBResource):
     month_to_fetch = partition_date_str[:-3]
 
     create_table_query = """
-            CREATE TABLE IF NOT EXISTS 
+            CREATE TABLE IF NOT EXISTS
                 trips (
                     vendor_id integer,
                     pickup_zone_id integer,
