@@ -47,6 +47,7 @@ def taxi_trips(context, database: DuckDBResource):
 
     partition_date_str = context.asset_partition_key_for_output()
     month_to_fetch = partition_date_str[:-3]
+    context.log.info(f"month_to_fetch: {month_to_fetch}")
 
     create_table_query = """
             CREATE TABLE IF NOT EXISTS

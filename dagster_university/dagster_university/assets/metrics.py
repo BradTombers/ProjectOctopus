@@ -2,6 +2,7 @@ from dagster import asset
 from dagster_duckdb import DuckDBResource
 from datetime import datetime, timedelta
 from . import constants
+from ..partitions import weekly_partition
 
 import pandas as pd
 import plotly.express as px
@@ -56,44 +57,40 @@ def manhattan_map():
     pio.write_image(fig, constants.MANHATTAN_MAP_FILE_PATH)
 
 
-@asset(deps=["taxi_trips"])
-def trips_by_week(database: DuckDBResource):
-    current_date = datetime.strptime("2023-03-01", constants.DATE_FORMAT)
-    end_date = datetime.strptime("2023-04-01", constants.DATE_FORMAT)
+@asset(deps=["taxi_trips"], partitions_def=weekly_partition)
+def trips_by_week(context, database: DuckDBResource):
+    partition_date_str = context.asset_partition_key_for_output()
+    context.log.info(f"partition_date_str: {partition_date_str}")
+    # current_date = datetime.strptime(partition_date_str, constants.DATE_FORMAT)
+    # end_date =  current_date += timedelta(days=7)
 
-    result = pd.DataFrame()
+    query = f"""
+        SELECT
+            vendor_id, total_amount, trip_distance, passenger_count
+        FROM trips
+        WHERE pickup_datetime >= '{partition_date_str}'
+            AND pickup_datetime < '{partition_date_str}'::DATE + interval '1 week'
+    """
 
-    while current_date < end_date:
-        current_date_str = current_date.strftime(constants.DATE_FORMAT)
-        query = f"""
-            SELECT
-                vendor_id, total_amount, trip_distance, passenger_count
-            FROM trips
-            WHERE DATE_TRUNC('week', pickup_datetime) = DATE_TRUNC('week', '{current_date_str}'::DATE)
-        """
+    with database.get_connection() as conn:
+        data_for_week = conn.execute(query).fetch_df()
 
-        with database.get_connection() as conn:
-            data_for_week = conn.execute(query).fetch_df()
+    result = (
+        data_for_week.agg(
+            {
+                "vendor_id": "count",
+                "total_amount": "sum",
+                "trip_distance": "sum",
+                "passenger_count": "sum",
+            }
+        )
+        .rename({"vendor_id": "num_trips"})
+        .to_frame()
+        .T
+    )  # type: ignore
 
-        aggregate = (
-            data_for_week.agg(
-                {
-                    "vendor_id": "count",
-                    "total_amount": "sum",
-                    "trip_distance": "sum",
-                    "passenger_count": "sum",
-                }
-            )
-            .rename({"vendor_id": "num_trips"})
-            .to_frame()
-            .T
-        )  # type: ignore
+    result["period"] = partition_date_str
 
-        aggregate["period"] = current_date
-
-        result = pd.concat([result, aggregate])
-
-        current_date += timedelta(days=7)
 
     # clean up the formatting of the dataframe
     result["num_trips"] = result["num_trips"].astype(int)
@@ -103,6 +100,12 @@ def trips_by_week(database: DuckDBResource):
     result = result[
         ["period", "num_trips", "total_amount", "trip_distance", "passenger_count"]
     ]
-    result = result.sort_values(by="period")
 
-    result.to_csv(constants.TRIPS_BY_WEEK_FILE_PATH, index=False)
+    try:
+        # If the file already exists, append to it, but replace the existing month's data
+        existing = pd.read_csv(constants.TRIPS_BY_WEEK_FILE_PATH)
+        existing = existing[existing["period"] != partition_date_str]
+        existing = pd.concat([existing, result]).sort_values(by="period")
+        existing.to_csv(constants.TRIPS_BY_WEEK_FILE_PATH, index=False)
+    except FileNotFoundError:
+        result.to_csv(constants.TRIPS_BY_WEEK_FILE_PATH, index=False)
