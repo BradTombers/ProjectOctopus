@@ -91,7 +91,6 @@ def trips_by_week(context, database: DuckDBResource):
 
     result["period"] = partition_date_str
 
-
     # clean up the formatting of the dataframe
     result["num_trips"] = result["num_trips"].astype(int)
     result["passenger_count"] = result["passenger_count"].astype(int)
