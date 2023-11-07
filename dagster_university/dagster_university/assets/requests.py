@@ -14,11 +14,11 @@ class AdhocRequestConfig(Config):
     end_date: str
 
 
-@asset(
-  deps=["taxi_zones", "taxi_trips"]
-)
+@asset(deps=["taxi_zones", "taxi_trips"])
 def adhoc_request(config: AdhocRequestConfig, database: DuckDBResource):
-    file_path = constants.REQUEST_DESTINATION_TEMPLATE_FILE_PATH.format(config.filename.split('.')[0])
+    file_path = constants.REQUEST_DESTINATION_TEMPLATE_FILE_PATH.format(
+        config.filename.split(".")[0]
+    )
 
     query = f"""
       select
@@ -60,8 +60,8 @@ def adhoc_request(config: AdhocRequestConfig, database: DuckDBResource):
         labels={
             "hour_of_day": "Hour of Day",
             "day_of_week": "Day of Week",
-            "num_trips": "Number of Trips"
-        }
+            "num_trips": "Number of Trips",
+        },
     )
 
     pio.write_image(fig, file_path)
