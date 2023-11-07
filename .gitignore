@@ -20,3 +20,20 @@ media/
 
 # OS generated files
 .DS_Store
+
+# dagster
+*index.db*
+*.db-shm
+*.db-wal
+*runs.db
+*schedules.db
+
+# DuckDB
+*.duckdb
+/dagster_university/tmpdshmwpp6/
+
+# Jupyter
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+/dagster_university/tmp8406a2il/
+/dagster_university/data/
