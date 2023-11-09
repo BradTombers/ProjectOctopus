@@ -24,3 +24,12 @@ resource "google_secret_manager_secret_iam_member" "admin_app_encryption_key_acc
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.edfi_cloud_run.email}"
 }
+
+# Allow unrestricted access to EdFi API
+resource "google_cloud_run_service_iam_member" "public_invoker" {
+  location = google_cloud_run_v2_service.edfi_api.location
+  project  = var.project_id
+  service  = google_cloud_run_v2_service.edfi_api.name
+  role     = "roles/run.invoker"
+  member   = "allUsers"
+}
