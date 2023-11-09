@@ -34,3 +34,6 @@ media/
 # Jupyter
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
+
+# Terraform
+/terraform/edfi/.terraform/
