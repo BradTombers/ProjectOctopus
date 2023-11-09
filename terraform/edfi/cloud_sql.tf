@@ -24,3 +24,18 @@ resource "google_sql_database_instance" "edfi_ods" {
     }
   }
 }
+
+resource "google_sql_database" "edfi_admin_database" {
+  name     = "EdFi_Admin"
+  instance = google_sql_database_instance.edfi_ods.name
+}
+
+resource "google_sql_database" "edfi_security_database" {
+  name     = "EdFi_Security"
+  instance = google_sql_database_instance.edfi_ods.name
+}
+
+resource "google_sql_database" "edfi_ods_2023" {
+  name     = "EdFi_Ods_2023"
+  instance = google_sql_database_instance.edfi_ods.name
+}
