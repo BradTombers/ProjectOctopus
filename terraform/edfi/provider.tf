@@ -10,6 +10,7 @@ terraform {
 provider "google" {
   project = "edfi-training"
   region  = var.region
+  credentials = file("/Users/bradtombers/.creds/gcp-terraform-service-account-key.json")
 }
 
 terraform {
