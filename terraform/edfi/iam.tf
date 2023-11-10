@@ -26,10 +26,20 @@ resource "google_secret_manager_secret_iam_member" "admin_app_encryption_key_acc
 }
 
 # Allow unrestricted access to EdFi API
-resource "google_cloud_run_service_iam_member" "public_invoker" {
+resource "google_cloud_run_service_iam_member" "api_public_invoker" {
   location = google_cloud_run_v2_service.edfi_api.location
   project  = var.project_id
   service  = google_cloud_run_v2_service.edfi_api.name
+  role     = "roles/run.invoker"
+  member   = "allUsers"
+}
+
+
+# Allow unrestricted access to EdFi Admin App
+resource "google_cloud_run_service_iam_member" "admin_app_public_invoker" {
+  location = google_cloud_run_v2_service.edfi_admin_app.location
+  project  = var.project_id
+  service  = google_cloud_run_v2_service.edfi_admin_app.name
   role     = "roles/run.invoker"
   member   = "allUsers"
 }
