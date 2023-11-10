@@ -1,0 +1,9 @@
+edfi_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth
+      project: edfi-training
+      dataset: silver
+      threads: 1

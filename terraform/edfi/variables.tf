@@ -9,3 +9,15 @@ variable "project_id" {
   default     = "edfi-training"
   description = "GCP Project ID"
 }
+
+variable "stack_env" {
+  type        = string
+  default     = "dev"
+  description = "Stack Environment"
+}
+
+variable "dev_name" {
+  type        = string
+  default     = "btombers"
+  description = "Stack Environment"
+}
