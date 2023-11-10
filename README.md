@@ -9,9 +9,9 @@ ProjectOctopus/
 ├── dagster_university/  # Core module and related code for Dagster University.
 ├── django_tutorial/     # Application and exercises from the Django tutorial.
 ├── edfi/            
-│   ├── edfi_admin_app/  # Scripts to deploy EdFi Admin App 
-│   ├── edfi_api/        # Scripts to deploy EdFi API
-│   ├── edfi_ods/        # Scripts to deploy EdFi ODS
+│   ├── edfi_admin_app/  # Docker specs and bash scripts for deploying EdFi Admin App 
+│   ├── edfi_api/        # Docker specs and bash scripts for deploying EdFi API
+│   ├── edfi_ods/        # Docker specs and bash scripts for deploying EdFi ODS
 ├── etl/                 # Placeholder for future ETL projects
 ├── terraform/             
 │   ├── edfi/            # Terraform configurations for Ed-FI ODS, API, and Admin App          
