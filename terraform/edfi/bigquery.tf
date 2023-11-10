@@ -7,11 +7,6 @@ resource "google_bigquery_dataset" "silver" {
   labels = {
     env = var.stack_env
   }
-
-  access {
-    role   = "READER"
-    domain = "hashicorp.com"
-  }
 }
 
 resource "google_bigquery_dataset" "gold" {
@@ -22,9 +17,22 @@ resource "google_bigquery_dataset" "gold" {
   labels = {
     env = var.stack_env
   }
+}
 
-  access {
-    role   = "READER"
-    domain = "hashicorp.com"
-  }
+resource "google_bigquery_dataset_iam_binding" "silver_owner" {
+  dataset_id = google_bigquery_dataset.silver.dataset_id
+  role       = "roles/bigquery.dataOwner"
+
+  members = [
+    "user:${var.data_owner_email}",
+  ]
+}
+
+resource "google_bigquery_dataset_iam_binding" "gold_owner" {
+  dataset_id = google_bigquery_dataset.silver.dataset_id
+  role       = "roles/bigquery.dataOwner"
+
+  members = [
+    "user:${var.data_owner_email}",
+  ]
 }

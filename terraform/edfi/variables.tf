@@ -21,3 +21,9 @@ variable "dev_name" {
   default     = "btombers"
   description = "Stack Environment"
 }
+
+variable "data_owner_email" {
+  description = "The email of the BigQuery data owner"
+  type        = string
+}
+
