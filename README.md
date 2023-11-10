@@ -8,8 +8,12 @@ Below is an outline of the top-level structure of this repository:
 ProjectOctopus/
 ├── dagster_university/  # Core module and related code for Dagster University.
 ├── django_tutorial/     # Application and exercises from the Django tutorial.
-├── edfi_api/            # Specification for Docker Image for Ed-Fi API
+├── edfi/            
+│   ├── edfi_admin_app/  # Scripts to deploy EdFi Admin App 
+│   ├── edfi_api/        # Scripts to deploy EdFi API
+│   ├── edfi_ods/        # Scripts to deploy EdFi ODS
 ├── etl/                 # Placeholder for future ETL projects
-├── terraform/           # Terraform configurations for deploying Ed-FI ODS and API
+├── terraform/             
+│   ├── edfi/            # Terraform configurations for Ed-FI ODS, API, and Admin App          
 ├── utils/               # Placeholder for future utility scripts and helpers
 </pre>
